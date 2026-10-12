@@ -1,10 +1,10 @@
-curator,order,title,year,posterUrl,genres,backType,backText,quoteBy
-milan,1,Knives Out,2019,,"Mystery, Comedy",why,Sample note: replace this with why Milan loved it.,
-milan,2,Die Hard,1988,,"Action, Thriller",why,Sample note: replace this with why Milan loved it.,
-milan,3,The Holdovers,2023,,"Comedy, Drama",why,Sample note: replace this with why Milan loved it.,
-camryn,1,Elf,2003,,"Comedy, Family",quote,The best way to spread Christmas cheer is singing loud for all to hear.,Buddy
-camryn,2,Love Actually,2003,,"Romance, Comedy",why,Sample note: replace this with why Camryn loved it.,
-camryn,3,Home Alone,1990,,"Comedy, Family",why,Sample note: replace this with why Camryn loved it.,
-aryanna,1,Klaus,2019,,"Animation, Family",why,Sample note: replace this with why Aryanna loved it.,
-aryanna,2,Arthur Christmas,2011,,"Animation, Family",why,Sample note: replace this with why Aryanna loved it.,
-aryanna,3,The Polar Express,2004,,"Animation, Adventure",why,Sample note: replace this with why Aryanna loved it.,
+"curator","order","title","year","posterUrl","genres","backType","backText","quoteBy"
+"milan","1","Knives Out","2019","","comedy","why","Sample note: replace this with why Milan loved it.",""
+"milan","2","Die Hard","1988","","drama","why","Sample note: replace this with why Milan loved it.",""
+"milan","3","The Holdovers","2023","","drama","why","Sample note: replace this with why Milan loved it.",""
+"camryn","1","Elf","2003","","comedy","quote","The best way to spread Christmas cheer is singing loud for all to hear.","Buddy"
+"camryn","2","Love Actually","2003","","romance","why","Sample note: replace this with why Camryn loved it.",""
+"camryn","3","Home Alone","1990","","children","why","Sample note: replace this with why Camryn loved it.",""
+"aryanna","1","Klaus","2019","","children","why","Sample note: replace this with why Aryanna loved it.",""
+"aryanna","2","Arthur Christmas","2011","","children","why","Sample note: replace this with why Aryanna loved it.",""
+"aryanna","3","The Polar Express","2004","","children","why","Sample note: replace this with why Aryanna loved it.",""
