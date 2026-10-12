@@ -1,0 +1,57 @@
+name: Sync data from Google Sheet
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-sheet
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Set under Settings → Secrets and variables → Actions → Variables.
+    if: vars.SHEET_ID != ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download sheet tabs
+        env:
+          SHEET_ID: ${{ vars.SHEET_ID }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+
+          # tab:required-column (same as TABS in app.js)
+          for entry in Settings:key Curators:id Favorites:curator People:slug Picks:slug; do
+            tab="${entry%%:*}"
+            column="${entry##*:}"
+            curl -fsSL --retry 3 -o "$tmp/$tab.csv" \
+              "https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${tab}"
+
+            # Google returns the first tab when a name doesn't match, so check the header.
+            if ! head -n 1 "$tmp/$tab.csv" | grep -qi "\"${column}\""; then
+              echo "::error::Tab '$tab' is missing column '$column'. Check the tab name in the sheet."
+              exit 1
+            fi
+          done
+
+          # Only replace files once every tab downloaded and checked out OK.
+          cp "$tmp"/*.csv data/
+
+      - name: Commit changes
+        run: |
+          git add data
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync data from Google Sheet"
+          git push

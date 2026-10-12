@@ -4,165 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#020617">
-    <title>Holiday Movie Recommendations 🎬🎄</title>
+    <title>Holiday Movie Hub 🎬🎄</title>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        [hidden] { display: none !important; }
+
+        /* Flip cards */
+        .flip-card { perspective: 1200px; }
+        .flip-inner { position: relative; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; }
+        .flip-card.is-flipped .flip-inner { transform: rotateY(180deg); }
+        .flip-face { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+        .flip-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .flip-inner, .flip-card.is-flipped .flip-inner { transition: none; transform: none; }
+            .flip-back { transform: none; opacity: 0; transition: opacity 0.2s; }
+            .flip-card.is-flipped .flip-back { opacity: 1; }
+        }
+
+        /* Carousels: hide the scrollbar but keep swipe/trackpad scrolling */
+        .carousel { scrollbar-width: none; }
+        .carousel::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between antialiased overflow-x-hidden">
 
-    <main id="app" class="max-w-4xl w-full mx-auto px-4 py-12 flex-grow">
-        <!-- Content dynamically injected here -->
+    <main id="app" class="max-w-5xl w-full mx-auto px-4 py-12 flex-grow">
+        <div class="flex flex-col items-center justify-center py-32 gap-4 text-slate-500" role="status">
+            <div class="w-10 h-10 rounded-full border-4 border-slate-800 border-t-slate-400 animate-spin"></div>
+            <p>Unwrapping the movies…</p>
+        </div>
     </main>
 
     <footer class="text-center py-6 text-slate-600 text-xs border-t border-slate-900">
         <p>Made with ❤️ for Christmas • Handpicked recommendations</p>
     </footer>
 
-    <script src="data.js"></script>
-    <script>
-        // Repo subpath on GitHub Pages. Change to '/' if you move to a custom domain.
-        const BASE = '/family-movie-suggestions/';
-        // Use BASE when served from GitHub Pages, '/' when previewing locally.
-        const base = window.location.pathname.startsWith(BASE) ? BASE : '/';
-
-        // GitHub Pages SPA redirect handling: 404.html sends /camryn to /?p=/camryn.
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            const p = params.get('p');
-            if (p) {
-                const q = params.get('q');
-                const cleanPath = base + p.replace(/^\//, '') + (q ? '?' + q : '');
-                window.history.replaceState(null, '', cleanPath + window.location.hash);
-            }
-        })();
-
-        // Accent classes per themeColor. Full class strings so Tailwind can generate them.
-        const THEMES = {
-            indigo:  { badge: 'bg-indigo-950 text-indigo-300 border-indigo-800/60',   quote: 'border-indigo-500/80',  pill: 'bg-indigo-950/80 text-indigo-300 border-indigo-800/50',   glow: 'from-indigo-500/20' },
-            blue:    { badge: 'bg-blue-950 text-blue-300 border-blue-800/60',         quote: 'border-blue-500/80',    pill: 'bg-blue-950/80 text-blue-300 border-blue-800/50',         glow: 'from-blue-500/20' },
-            sky:     { badge: 'bg-sky-950 text-sky-300 border-sky-800/60',            quote: 'border-sky-500/80',     pill: 'bg-sky-950/80 text-sky-300 border-sky-800/50',            glow: 'from-sky-500/20' },
-            teal:    { badge: 'bg-teal-950 text-teal-300 border-teal-800/60',         quote: 'border-teal-500/80',    pill: 'bg-teal-950/80 text-teal-300 border-teal-800/50',         glow: 'from-teal-500/20' },
-            emerald: { badge: 'bg-emerald-950 text-emerald-300 border-emerald-800/60', quote: 'border-emerald-500/80', pill: 'bg-emerald-950/80 text-emerald-300 border-emerald-800/50', glow: 'from-emerald-500/20' },
-            green:   { badge: 'bg-green-950 text-green-300 border-green-800/60',      quote: 'border-green-500/80',   pill: 'bg-green-950/80 text-green-300 border-green-800/50',      glow: 'from-green-500/20' },
-            amber:   { badge: 'bg-amber-950 text-amber-300 border-amber-800/60',      quote: 'border-amber-500/80',   pill: 'bg-amber-950/80 text-amber-300 border-amber-800/50',      glow: 'from-amber-500/20' },
-            red:     { badge: 'bg-red-950 text-red-300 border-red-800/60',            quote: 'border-red-500/80',     pill: 'bg-red-950/80 text-red-300 border-red-800/50',            glow: 'from-red-500/20' },
-            rose:    { badge: 'bg-rose-950 text-rose-300 border-rose-800/60',         quote: 'border-rose-500/80',    pill: 'bg-rose-950/80 text-rose-300 border-rose-800/50',         glow: 'from-rose-500/20' },
-            violet:  { badge: 'bg-violet-950 text-violet-300 border-violet-800/60',   quote: 'border-violet-500/80',  pill: 'bg-violet-950/80 text-violet-300 border-violet-800/50',   glow: 'from-violet-500/20' }
-        };
-
-        // Shown when a movie has no poster or the poster fails to load.
-        const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">' +
-            '<rect width="300" height="450" fill="#0f172a"/>' +
-            '<text x="150" y="225" font-size="64" text-anchor="middle" dominant-baseline="middle">🎬</text>' +
-            '</svg>'
-        );
-
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        function renderMovie(m, theme) {
-            const streaming = m.streaming || [];
-            return `
-                <article class="bg-slate-900/90 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row transition hover:border-slate-700/80">
-                    <img src="${escapeHtml(m.posterUrl || PLACEHOLDER)}"
-                         alt="${escapeHtml(m.title)} poster"
-                         loading="lazy"
-                         onerror="this.onerror=null; this.src=PLACEHOLDER;"
-                         class="w-full md:w-52 h-72 md:h-auto object-cover bg-slate-950 shrink-0">
-                    <div class="p-6 md:p-8 flex flex-col justify-between flex-grow">
-                        <div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-                                ${escapeHtml(m.title)}
-                                ${m.year ? `<span class="text-base font-normal text-slate-400">(${escapeHtml(m.year)})</span>` : ''}
-                            </h2>
-                            ${m.review ? `
-                                <blockquote class="text-slate-300 mt-4 italic bg-slate-950/60 p-4 rounded-xl border-l-4 ${theme.quote} leading-relaxed">
-                                    “${escapeHtml(m.review)}”
-                                </blockquote>
-                            ` : ''}
-                        </div>
-                        ${streaming.length ? `
-                            <div class="mt-6 flex flex-wrap items-center gap-2 pt-4 border-t border-slate-800/60">
-                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-1">Where to watch:</span>
-                                ${streaming.map(service => `
-                                    <span class="px-3 py-1 border rounded-full text-xs font-semibold ${theme.pill}">
-                                        ${escapeHtml(service)}
-                                    </span>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                </article>
-            `;
-        }
-
-        function renderPerson(user) {
-            const theme = THEMES[user.themeColor] || THEMES.indigo;
-            const movies = user.movies || [];
-            document.title = `${user.name}'s Holiday Watchlist 🎬🎄`;
-
-            const moviesHtml = movies.length
-                ? movies.map(m => renderMovie(m, theme)).join('')
-                : `
-                    <div class="text-center py-20 px-6 bg-slate-900/50 rounded-2xl border border-slate-800">
-                        <p class="text-slate-400 text-lg">Your recommendations are being wrapped up! Check back soon 🎁</p>
-                    </div>
-                `;
-
-            return `
-                <header class="relative text-center mb-12">
-                    <div class="absolute inset-x-0 -top-12 h-48 bg-gradient-to-b ${theme.glow} to-transparent blur-3xl -z-10" aria-hidden="true"></div>
-                    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border shadow-inner mb-4 ${theme.badge}">
-                        🎄 Holiday Watchlist
-                    </span>
-                    <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white">
-                        For ${escapeHtml(user.name)}
-                    </h1>
-                    <p class="text-slate-400 mt-3 text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
-                        ${escapeHtml(user.greeting)}
-                    </p>
-                </header>
-                <section class="space-y-8">
-                    ${moviesHtml}
-                </section>
-            `;
-        }
-
-        function renderLanding() {
-            return `
-                <div class="text-center py-24 max-w-md mx-auto">
-                    <div class="text-6xl mb-6">🎬 🎄</div>
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Holiday Movie Hub</h1>
-                    <p class="text-slate-400 mt-4 text-base leading-relaxed">
-                        Welcome! Please scan the personalized QR code on your holiday card to open your curated watchlist.
-                    </p>
-                </div>
-            `;
-        }
-
-        // Slug comes from the path (/family-movie-suggestions/camryn) or ?u=camryn.
-        const slug = (
-            new URLSearchParams(window.location.search).get('u') ||
-            decodeURIComponent(window.location.pathname.slice(base.length))
-        ).replace(/^\/+|\/+$/g, '').toLowerCase();
-
-        const user = slug && typeof familyData !== 'undefined' && Object.hasOwn(familyData, slug)
-            ? familyData[slug]
-            : null;
-
-        document.getElementById('app').innerHTML = user ? renderPerson(user) : renderLanding();
-    </script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
