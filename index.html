@@ -8,10 +8,65 @@
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background:
+                radial-gradient(ellipse 60% 40% at 0% 0%, rgba(220, 38, 38, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(22, 163, 74, 0.12), transparent),
+                #020617;
+        }
         [hidden] { display: none !important; }
+        .font-festive { font-family: 'Mountains of Christmas', Georgia, serif; }
+
+        /* Candy-cane divider */
+        .candy-cane {
+            width: 9rem; height: 0.5rem; border-radius: 9999px;
+            background: repeating-linear-gradient(-45deg, #dc2626 0 10px, #f8fafc 10px 20px);
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.35);
+        }
+
+        /* String lights */
+        #lights {
+            display: flex; justify-content: space-around; overflow: hidden;
+            height: 2.5rem; position: relative; pointer-events: none;
+        }
+        #lights::before {
+            content: ''; position: absolute; left: 0; right: 0; top: 0.5rem;
+            border-top: 2px solid #14532d;
+        }
+        .bulb {
+            position: relative; width: 0.65rem; height: 1.1rem; margin-top: 0.75rem;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            background: var(--c); box-shadow: 0 0.2rem 1rem 0.15rem var(--c);
+            animation: twinkle 2.4s ease-in-out infinite;
+        }
+        .bulb::before {
+            content: ''; position: absolute; top: -0.3rem; left: 50%; transform: translateX(-50%);
+            width: 0.45rem; height: 0.35rem; border-radius: 2px; background: #334155;
+        }
+        .bulb:nth-child(4n+1) { --c: #ef4444; }
+        .bulb:nth-child(4n+2) { --c: #22c55e; animation-delay: 0.6s; margin-top: 1rem; }
+        .bulb:nth-child(4n+3) { --c: #facc15; animation-delay: 1.2s; }
+        .bulb:nth-child(4n+4) { --c: #3b82f6; animation-delay: 1.8s; margin-top: 1rem; }
+        @keyframes twinkle { 50% { opacity: 0.35; box-shadow: none; } }
+
+        /* Snowfall */
+        #snow { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+        .snowflake {
+            position: absolute; top: -2vh; border-radius: 9999px; background: #fff;
+            animation: snowfall linear infinite;
+        }
+        @keyframes snowfall {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(1.5rem, 52vh); }
+            100% { transform: translate(-0.5rem, 104vh); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bulb { animation: none; }
+        }
 
         /* Flip cards */
         .flip-card { perspective: 1200px; }
@@ -31,17 +86,25 @@
         .carousel::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between antialiased overflow-x-hidden">
+<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased overflow-x-hidden">
+    <div id="snow" aria-hidden="true"></div>
+    <div id="lights" class="relative z-10" aria-hidden="true"></div>
 
-    <main id="app" class="max-w-5xl w-full mx-auto px-4 py-12 flex-grow">
+    <main id="app" class="relative z-10 max-w-5xl w-full mx-auto px-4 pt-6 pb-12 flex-grow">
         <div class="flex flex-col items-center justify-center py-32 gap-4 text-slate-500" role="status">
             <div class="w-10 h-10 rounded-full border-4 border-slate-800 border-t-slate-400 animate-spin"></div>
             <p>Unwrapping the movies…</p>
         </div>
     </main>
 
-    <footer class="text-center py-6 text-slate-600 text-xs border-t border-slate-900">
-        <p>Made with ❤️ for Christmas • Handpicked recommendations</p>
+    <footer class="relative z-10 text-center text-slate-500 text-xs">
+        <svg class="block w-full h-10 md:h-14 text-slate-200/10" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+            <path fill="currentColor" d="M0 50 C 160 10, 320 70, 480 40 S 800 10, 960 45 S 1280 70, 1440 35 L 1440 80 L 0 80 Z"/>
+        </svg>
+        <div class="bg-slate-200/10 pb-6">
+            <p class="text-base mb-1" aria-hidden="true">🎄 ⛄ 🎁</p>
+            <p>Made with ❤️ for Christmas • Merry Christmas &amp; happy watching!</p>
+        </div>
     </footer>
 
     <script src="config.js"></script>

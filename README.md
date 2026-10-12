@@ -23,15 +23,15 @@ No build step, no dependencies: plain HTML, vanilla JS and Tailwind via CDN.
 
 ## Editing the sheet
 
-Comma-separate lists inside a cell (e.g. `Netflix, Rent on Prime`). Rows are sorted by `order`. Blank rows are ignored.
+Comma-separate lists inside a cell (e.g. `Comedy, Family`). Rows are sorted by `order`. Blank rows are ignored.
 
 | Tab | Columns | Notes |
 | --- | --- | --- |
 | `Settings` | `key`, `value` | Keys: `homeTitle`, `homeIntro`, `favoritesYear` (shown as "Milan's 2026 Favorites"), `familySignature` |
 | `Curators` | `id`, `name`, `themeColor`, `order` | One row per homepage carousel. `id` is what you put in `Favorites.curator` |
-| `Favorites` | `curator`, `order`, `title`, `year`, `posterUrl`, `streaming`, `backType`, `backText`, `quoteBy` | Up to 10 per curator |
+| `Favorites` | `curator`, `order`, `title`, `year`, `posterUrl`, `genres`, `backType`, `backText`, `quoteBy` | Up to 10 per curator |
 | `People` | `slug`, `name`, `themeColor`, `message` | `slug` is the URL path: lowercase letters, numbers and dashes. Line breaks in `message` are kept |
-| `Picks` | `slug`, `order`, `title`, `year`, `posterUrl`, `streaming`, `backType`, `backText`, `quoteBy` | Up to 5 per person |
+| `Picks` | `slug`, `order`, `title`, `year`, `posterUrl`, `genres`, `backType`, `backText`, `quoteBy` | Up to 5 per person |
 
 - **backType**: `why` (shows `backText` as "Why we loved it") or `quote` (shows `backText` as a quote, with `quoteBy` as the speaker).
 - **themeColor**: `indigo`, `blue`, `sky`, `teal`, `emerald`, `green`, `amber`, `red`, `rose`, `violet` (anything else uses indigo).

@@ -139,7 +139,7 @@ function toMovie(row) {
         title: row.title,
         year: row.year,
         posterUrl: row.posterurl,
-        streaming: (row.streaming || '').split(',').map(s => s.trim()).filter(Boolean),
+        genres: (row.genres || '').split(',').map(s => s.trim()).filter(Boolean),
         backType: (row.backtype || 'why').toLowerCase() === 'quote' ? 'quote' : 'why',
         backText: row.backtext,
         quoteBy: row.quoteby
@@ -202,9 +202,9 @@ function renderFlipCard(movie, theme, sizeClass) {
                             ${escapeHtml(movie.title)}
                             ${movie.year ? `<span class="font-normal text-slate-400 text-sm">(${escapeHtml(movie.year)})</span>` : ''}
                         </h3>
-                        ${movie.streaming.length ? `
+                        ${movie.genres.length ? `
                             <div class="mt-2 flex flex-wrap gap-1.5">
-                                ${movie.streaming.map(s => `
+                                ${movie.genres.map(s => `
                                     <span class="px-2 py-0.5 border rounded-full text-[0.68rem] font-semibold ${theme.pill}">${escapeHtml(s)}</span>
                                 `).join('')}
                             </div>
@@ -225,8 +225,8 @@ function renderCarousel(id, title, theme, movies) {
     return `
         <section class="mb-14" aria-labelledby="${id}-title">
             <div class="flex items-end justify-between gap-4 mb-4">
-                <h2 id="${id}-title" class="text-2xl md:text-3xl font-extrabold tracking-tight ${theme.heading}">
-                    ${escapeHtml(title)}
+                <h2 id="${id}-title" class="font-festive text-3xl md:text-4xl font-bold ${theme.heading}">
+                    <span aria-hidden="true">⭐</span> ${escapeHtml(title)}
                 </h2>
                 <div class="hidden md:flex gap-2">
                     <button type="button" data-scroll="-1" data-target="${id}" aria-label="Scroll left"
@@ -260,8 +260,9 @@ function renderHome(data) {
 
     return `
         <header class="text-center mb-14">
-            <div class="text-5xl mb-4">🎬 🎄</div>
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white">${escapeHtml(settings.homeTitle)}</h1>
+            <div class="text-5xl mb-3" aria-hidden="true">🎄</div>
+            <h1 class="font-festive text-5xl md:text-7xl font-bold text-white drop-shadow-[0_0_25px_rgba(250,204,21,0.25)]">${escapeHtml(settings.homeTitle)}</h1>
+            <div class="candy-cane mx-auto mt-5" aria-hidden="true"></div>
             ${settings.homeIntro ? `
                 <p class="text-slate-400 mt-4 text-lg max-w-2xl mx-auto leading-relaxed">${escapeHtml(settings.homeIntro)}</p>
             ` : ''}
@@ -294,15 +295,22 @@ function renderPerson(person, data) {
         `;
 
     return `
+        <nav class="mb-8">
+            <a href="${base}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-900/70 text-slate-300 text-sm font-semibold hover:bg-slate-800 hover:text-white transition">
+                <span aria-hidden="true">←</span> All our favorites
+            </a>
+        </nav>
         <header class="relative text-center mb-10">
             <div class="absolute inset-x-0 -top-12 h-48 bg-gradient-to-b ${theme.glow} to-transparent blur-3xl -z-10" aria-hidden="true"></div>
             <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border shadow-inner mb-4 ${theme.badge}">
                 🎄 Holiday Watchlist
             </span>
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white">For ${escapeHtml(name)}</h1>
+            <h1 class="font-festive text-5xl md:text-7xl font-bold text-white">For ${escapeHtml(name)}</h1>
+            <div class="candy-cane mx-auto mt-5" aria-hidden="true"></div>
         </header>
         ${person.message ? `
-            <section class="max-w-2xl mx-auto mb-12 bg-slate-900/80 border border-slate-800 border-l-4 ${theme.note} rounded-2xl p-6 md:p-8">
+            <section class="relative max-w-2xl mx-auto mb-12 bg-slate-900/80 border border-slate-800 border-l-4 ${theme.note} rounded-2xl p-6 md:p-8">
+                <span class="absolute -top-4 -right-3 text-4xl rotate-12" aria-hidden="true">🎀</span>
                 <p class="text-xs font-bold uppercase tracking-widest ${theme.heading} mb-3">A note from all of us</p>
                 <p class="text-slate-200 text-lg leading-relaxed whitespace-pre-line">${escapeHtml(person.message)}</p>
                 ${settings.familySignature ? `
@@ -346,11 +354,37 @@ function bindEvents(root) {
     });
 }
 
+// ---------- Decorations ----------
+
+// Falling snow behind the content. Skipped when the viewer prefers reduced motion.
+function startSnow() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const layer = document.getElementById('snow');
+    const count = window.innerWidth < 768 ? 30 : 60;
+    let html = '';
+    for (let i = 0; i < count; i++) {
+        const size = 2 + Math.random() * 4;
+        html += `<span class="snowflake" style="left:${Math.random() * 100}%;` +
+            `width:${size}px;height:${size}px;opacity:${0.3 + Math.random() * 0.6};` +
+            `animation-duration:${10 + Math.random() * 12}s;animation-delay:-${Math.random() * 22}s"></span>`;
+    }
+    layer.innerHTML = html;
+}
+
+// A string of twinkling lights across the top of the page.
+function hangLights() {
+    const strand = document.getElementById('lights');
+    const count = Math.ceil(window.innerWidth / 48);
+    strand.innerHTML = Array.from({ length: count }, () => '<span class="bulb"></span>').join('');
+}
+
 // ---------- Start ----------
 
 (async function () {
     const app = document.getElementById('app');
     bindEvents(app);
+    hangLights();
+    startSnow();
 
     // Slug comes from the path (/family-movie-suggestions/camryn) or ?u=camryn.
     const slug = (
