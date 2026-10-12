@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Christmas Movie Recommendations</title>
+  <script type="text/javascript">
+    // Single Page Apps for GitHub Pages
+    // MIT License - https://github.com/rafgraph/spa-github-pages
+    // GitHub Pages serves this file for unknown paths like /family-movie-suggestions/camryn.
+    // It redirects to /family-movie-suggestions/?p=/camryn so index.html can render the page.
+    var pathSegmentsToKeep = 1; // 1 for github.io/repo-name/ subpaths, 0 for a custom domain
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?p=' +
+      encodeURIComponent('/' + l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/')) +
+      (l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body>
+</body>
+</html>
